@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+</head>
+
+
+<script>
+
+    function todisplay(input) {
+        display.value += input;
+    }
+
+    function cleardisplay() {
+        display.value = "";
+    }
+
+    function answerdisplay() {
+        const inputValue = display.value;
+
+        const operators = /[+\-*/]/;
+        const splitValues = inputValue.split(operators);
+        const matchOperator = inputValue.match(operators);
+
+        if (matchOperator && splitValues.length === 2) {
+            const num1 = parseInt(splitValues[0]);
+            const num2 = parseInt(splitValues[1]);
+
+
+
+            console.log('num1', num1);
+            console.log('num2', num2);    
+            console.log('operators', matchOperator);
+            
+
+                switch (matchOperator[0]) {
+                    case '+':
+                        result = num1 + num2;
+                        break;
+                    case '-':
+                        result = num1 - num2;
+                        break;
+                    case '*':
+                        result = num1 * num2;
+                        break;
+                    case '/':
+                        if (num2 !== 0) {
+                            result = num1 / num2;
+                        } else {
+                            alert("Cannot divide by zero");
+                            return;
+                        }
+                        break;
+                    default:
+                        alert("Invalid operator");
+                        return;
+                }
+
+                display.value = result;
+            } 
+
+      
+        }
+
+        function sendToBackend() {
+            const displayValue = document.getElementById("display").value;
+            const apiUrl = 'http://127.0.0.1:5001/display_value';
+            const formData = new FormData();
+            formData.append('displayValue', displayValue);
+        
+            fetch(apiUrl, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server responded with ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                // Handle the response from the server
+            })
+            .catch(error => {
+                console.error('Error:', error.message);
+                // Handle errors
+            });
+        }
+        
+        
+
+</script>
+<body>
+
+<input id="display" type="text">
+
+<div id="keys">
+    <button onclick="todisplay('1')">1</button>
+    <button onclick="todisplay('2')">2</button>
+    <button onclick="todisplay('3')">3</button>
+    <button onclick="todisplay('+')">+</button><br>
+
+    <button onclick="todisplay('4')">4</button>
+    <button onclick="todisplay('5')">5</button>
+    <button onclick="todisplay('6')">6</button>
+    <button onclick="todisplay('-')">-</button><br>
+    
+    <button onclick="todisplay('7')">7</button>
+    <button onclick="todisplay('8')">8</button>
+    <button onclick="todisplay('9')">9</button>
+    <button onclick="todisplay('/')">/</button><br>
+    
+    <button onclick="todisplay('*')">*</button>
+    <button onclick="todisplay('0')">0</button>
+    
+    <button onclick="cleardisplay()">C</button>
+    <button onclick="answerdisplay()">=</button>
+    <button onclick="sendToBackend()">Send</button>
+</div>
+
+
+
+</body>
+</html>
